@@ -1,0 +1,13 @@
+objection patchapk -s .\base.apk -c .\configScript.json -l .\subway-surfers.js
+
+zipalign -v 4 base.objection.apk aligned.apk
+apksigner sign --ks my-release-key.jks --ks-pass pass:123456 --out base_final.apk aligned.apk
+
+# rm -r aligned.apk
+
+zipalign -v 4 split_config.arm64_v8a.apk aligned.apk
+apksigner sign --ks my-release-key.jks --ks-pass pass:123456 --out split_file.apk aligned.apk
+
+# rm -r aligned.apk
+
+adb install-multiple .\base_final.apk .\split_file.apk
